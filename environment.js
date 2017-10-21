@@ -4,7 +4,8 @@
 
 module.exports = {
       client: {
-            port: '8081'
+            port: '8081',
+            app_dir: 'client/app'
       },
       database: {
             port: '8082'

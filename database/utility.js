@@ -50,14 +50,17 @@ let overwrite = (object, overwrite, property) => {
 };
 
 let append = (object, append, property) => {
+      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
       property = property.split('.');
       property.shift();
       var cur = object, last = property.pop();
+      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
       property.forEach((prop) => {
             cur[prop] = {};
             cur = cur[prop];
       });
       cur[last] = object[last] ? Object.assign(object[last], append) : append;
+      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
       return verify(object);
 };
 

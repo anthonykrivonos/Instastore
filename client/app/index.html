@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+      <head>
+            <title>Instastore</title>
+            <!-- Bootstrap CDN -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+            <!-- Local Styling -->
+            <link rel="stylesheet" type="text/css" href="theme.css"/>
+            <!-- Local JS -->
+            <script src="index.js"></script>
+      </head>
+      <body onload="renderer.viewDidLoad()">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <a class="navbar-brand" href="#">Instastore</a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                              <li class="nav-item">
+                                    <a onclick="renderer.toggle('basic')" class="nav-link" href="#">Database</a>
+                              </li>
+                              <li class="nav-item">
+                                    <a onclick="renderer.toggle('advanced')" class="nav-link" href="#">Advanced</a>
+                              </li>
+                              <li class="nav-item">
+                                    <a onclick="renderer.toggle('tools')" class="nav-link" href="#">Tools</a>
+                              </li>
+                              <li class="nav-item">
+                                    <a class="nav-link" href="#">Logout</a>
+                              </li>
+                        </ul>
+                  </div>
+            </nav>
+            <div class="card">
+                  <div class="card-header">
+                        <label for="basic-url">Database URL</label>
+                        <div class="input-group no-padding">
+                              <span class="input-group-addon" id="basic-addon3">
+                                    <span id="user">storage</span>/
+                                    <span id="doc" class="text-primary">
+
+                                    </span>
+                                    /
+                              </span>
+                              <input type="text" class="form-control" id="endpoint" aria-describedby="basic-addon3">
+                              <span onclick="basic.refresh()" class="input-group-btn basic">
+                                    <button class="btn btn-secondary" type="button">Refresh</button>
+                              </span>
+                              <span onclick="basic.save()" class="input-group-btn basic">
+                                    <button class="btn btn-primary" type="button">Save</button>
+                              </span>
+                              <span class="input-group-btn advanced">
+                                    <button class="btn btn-success" type="button">Create</button>
+                              </span>
+                              <span class="input-group-btn advanced">
+                                    <button class="btn btn-info" type="button">Read</button>
+                              </span>
+                              <span class="input-group-btn advanced">
+                                    <button class="btn btn-warning" type="button">Update</button>
+                              </span>
+                              <span class="input-group-btn advanced">
+                                    <button class="btn btn-danger" type="button">Delete</button>
+                              </span>
+                              <span class="input-group-btn tools">
+                                    <button class="btn btn-secondary" type="button">Compute</button>
+                              </span>
+                              <span class="input-group-btn tools">
+                                    <button class="btn btn-warning" type="button">Update</button>
+                              </span>
+                        </div>
+                  </div>
+                  <div class="card-body row no-space">
+                        <div class="col col-md-4 card no-padding" style="width: 20rem;">
+                              <ul id="doclist" class="list-group list-group-flush">
+                              </ul>
+                        </div>
+                        <div class="col col-md-8 card no-space" style="width: 20rem;">
+                              <div class="col card card-code no-space">
+                                    <div id="editor">{
+
+}</div>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+            <!-- ACE Code Editor -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js" type="text/javascript" charset="utf-8"></script>
+            <script>
+                  var editor = ace.edit("editor");
+                  editor.setTheme("ace/theme/clouds");
+                  editor.getSession().setMode("ace/mode/javascript");
+            </script>
+      </body>
+</html>

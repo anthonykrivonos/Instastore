@@ -6,6 +6,7 @@
 // Global Imports
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 
 // Local Imports
@@ -15,6 +16,7 @@ const file = require('./file.js');
 // Local Variables
 let port = process.env.PORT || environment.database.port || '8082';
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/create/:file*', function (req, res) {
@@ -31,6 +33,13 @@ app.post('/create/:file*', function (req, res) {
 });
 
 // Read Function
+app.get('/read/', function (req, res) {
+      file.read().then((r) => {
+            res.status(200).json(r);
+      }).catch(() => {
+            res.status(500).send('Error executing READ operation.');
+      });
+});
 app.get('/read/:file/', function (req, res) {
       let params = req.params;
       if (params.file == null)

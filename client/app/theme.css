@@ -1,0 +1,35 @@
+/* Instastore
+   database/utility.js
+   Anthony Krivonos
+   10/20/2017 */
+
+/* Global Styles */
+.no-padding, .no-space {
+      padding: 0 !important;
+}
+.no-margin, .no-space: {
+      margin: 0 !important;
+}
+
+/* Template Styles */
+.basic, .advanced, .tools {
+      display: none;
+}
+
+/* Bootstrap Style Override */
+.card {
+      border-radius: 0 !important;
+      border-left: 0;
+      border-right: 0;
+}
+.card-code {
+
+}
+
+/* ACE Editor Style Override */
+#editor {
+      position: absolute;
+      width: 100%;
+      height: 40vw;
+      border-radius: 0px;
+}

@@ -33,13 +33,20 @@ let create = (file, address, body) => {
 let read = (file, address) => {
       return new Promise((resolve, reject) => {
             if (address == null) address = "";
-            console.log(`Reading document at ${file}/${address}`);
-            if (file == null) return reject();
-            fs.readFile(`${STORAGE}${file}${EXTENSION}`, 'utf8', (err, data) => {
-                  if (err) return reject();
-                  let doc = utility.subProperty(data, utility.propertyFromString(address));
-                  resolve(doc);
-            });
+            if (file == null) {
+                  console.log(`Reading entire ${STORAGE} directory`);
+                  fs.readdir(STORAGE, (err, dir) => {
+                        if (err) return reject();
+                        resolve({dir});
+                  });
+            } else {
+                  console.log(`Reading document at ${file}/${address}`);
+                  fs.readFile(`${STORAGE}${file}${EXTENSION}`, 'utf8', (err, data) => {
+                        if (err) return reject();
+                        let doc = utility.subProperty(data, utility.propertyFromString(address));
+                        resolve(doc);
+                  });
+            }
       });
 };
 

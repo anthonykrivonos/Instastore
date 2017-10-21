@@ -4,8 +4,10 @@
       "description": "Realtime database coded from scratch.",
       "main": "index.js",
       "scripts": {
+            "client": "node client/server.js",
             "serve": "node database/server.js",
-            "test": "node index.js"
+            "dev:client": "nodemon client/server.js",
+            "dev:serve": "nodemon database/server.js"
       },
       "repository": {
             "type": "git",
@@ -19,8 +21,12 @@
       "homepage": "https://github.com/anthonykrivonos/Instastore#readme",
       "dependencies": {
             "body-parser": "^1.18.2",
+            "cors": "^2.8.4",
             "express": "^4.16.2",
             "object-deep-update": "^1.0.1",
             "rxjs": "^5.4.3"
+      },
+      "devDependencies": {
+            "@angular/cli": "^1.4.9"
       }
 }
