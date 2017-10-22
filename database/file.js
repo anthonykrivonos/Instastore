@@ -70,12 +70,10 @@ let del = (file, address) => {
       return new Promise((resolve, reject) => {
             if (address == null) address = "";
             if (file == null) return reject();
-            console.log(`Deleting document at ${file}${address ? '/' + address : ''}.`)
             if (address == "") {
                   fs.unlink(`${STORAGE}${file}${EXTENSION}`, (err) => {
-                        console.log(`deleting ${STORAGE}${file}${EXTENSION}`)
                         if (err) return reject();
-                        resolve();
+                        resolve({});
                   });
             } else {
                   fs.readFile(`${STORAGE}${file}${EXTENSION}`, 'utf8', (err, data) => {
@@ -90,7 +88,19 @@ let del = (file, address) => {
       });
 };
 
+let query = (file, address, query) => {
+      return new Promise((resolve, reject) => {
+            if (address == null) address = "";
+            console.log(`Querying document at ${file}/${address}`);
+            fs.readFile(`${STORAGE}${file}${EXTENSION}`, 'utf8', (err, data) => {
+                  if (err) return reject();
+                  let doc = utility.query(utility.subProperty(data, utility.propertyFromString(address)), query);
+                  resolve(doc);
+            });
+      });
+};
+
 // Exported Methods
 module.exports = {
-      create, read, update, del
+      create, read, update, del, query
 };

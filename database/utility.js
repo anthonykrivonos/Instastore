@@ -21,12 +21,13 @@ let verify = (object) => {
 }
 
 let propertyFromString = (property) => {
-      if (property.length > 0) {
+      if (property && property.length > 0) {
             property = property.replace(/\//g, ".");
             if (property.charAt(0) != '.') property = `.${property}`;
             if (property.charAt(property.length-1) == '.') property = property.substring(0, property.length - 1);
+            return property;
       }
-      return property;
+      return "";
 };
 
 let subProperty = (object, property) => {
@@ -38,29 +39,30 @@ let subProperty = (object, property) => {
 }
 
 let overwrite = (object, overwrite, property) => {
-      property = property.split('.');
-      property.shift();
-      var cur = object, last = property.pop();
-      property.forEach((prop) => {
-            cur[prop] = {};
-            cur = cur[prop];
-      });
-      cur[last] = overwrite;
+      if (property && property.length > 0) {
+            property = property.split('.');
+            property.shift();
+            var cur = object, last = property.pop();
+            property.forEach((prop) => {
+                  cur[prop] = {};
+                  cur = cur[prop];
+            });
+            cur[last] = overwrite;
+      } else object = overwrite;
       return verify(object);
 };
 
 let append = (object, append, property) => {
-      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
-      property = property.split('.');
-      property.shift();
-      var cur = object, last = property.pop();
-      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
-      property.forEach((prop) => {
-            cur[prop] = {};
-            cur = cur[prop];
-      });
-      cur[last] = object[last] ? Object.assign(object[last], append) : append;
-      console.log(`Current object: ${JSON.stringify(object, null, 2)}`)
+      if (property && property.length > 0) {
+            property = property.split('.');
+            property.shift();
+            var cur = object, last = property.pop();
+            property.forEach((prop) => {
+                  cur[prop] = {};
+                  cur = cur[prop];
+            });
+            cur[last] = object[last] ? Object.assign(object[last], append) : append;
+      } else object = Object.assign(object, append);
       return verify(object);
 };
 
@@ -69,7 +71,39 @@ let remove = (object, property) => {
       return verify(object ? object : {});
 };
 
+let query = (object, query) => {
+      if (!query) return object;
+      if (query.search) object = search(object, query.search);
+      if (query.limit) object = limit(object, query.limit);
+};
+
+let search = (object, value) => {
+      var result = null;
+      if (object instanceof Array) {
+            for (var i = 0; i < object.length; i++) {
+                  result = search(object[i]);
+                  if (result) break;
+            }
+      } else {
+            for (var prop in object) {
+                  if (prop == value && object[prop] == 1) return object;
+                  if (object[prop] instanceof Object || object[prop] instanceof Array) {
+                        result = search(object[prop]);
+                        if (result) break;
+                  }
+            }
+      }
+      return result;
+}
+
+let limit = (object, value) => {
+      var result = null, newObject = [];
+      if (object instanceof Array) for (var i = 0; i < value; i++) newObject.push(object[i]);
+      else newObject = object;
+      return newObject;
+}
+
 // Exported Methods
 module.exports = {
-      beautify, verify, propertyFromString, subProperty, overwrite, append, remove
+      beautify, verify, propertyFromString, subProperty, overwrite, append, remove, query
 };

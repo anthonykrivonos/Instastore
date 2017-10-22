@@ -10,7 +10,7 @@
 const OPTIONS = [
       "basic",
       "advanced",
-      "tools"
+      "query"
 ];
 
 let viewDidLoad = () => {
@@ -30,9 +30,11 @@ let toggle = (action) => {
                   });
             }
       });
+      renderer.readDir();
 };
 
-let readDir = (firstDocClbk) => {
+let readDir = () => {
+      renderer.setEndpoint("");
       clientRole.get('http://localhost:8082/read/').then((data) => {
             let doclist = document.getElementById("doclist");
             let htmlList = ``;
@@ -72,8 +74,12 @@ let getEndpoint = () => {
       return document.getElementById('endpoint').value;
 }
 
+let setEndpoint = (endpoint) => {
+      document.getElementById('endpoint').value = endpoint;
+}
+
 const renderer = {
-      viewDidLoad, toggle, readDir, parseDocName, setCurrentDoc, getDoc, getEndpoint
+      viewDidLoad, toggle, readDir, parseDocName, setCurrentDoc, getDoc, getEndpoint, setEndpoint
 };
 
 //
@@ -87,17 +93,45 @@ let refresh = () => {
       }).catch(() => {
             editor.setValue("", -1);
       });
-}
+};
 
 let save = () => {
       let doc = renderer.getDoc(), endpoint = renderer.getEndpoint();
       clientRole.post(`http://localhost:8082/create/${doc}/${endpoint}`, editor.getValue()).then((data) => {
             editor.setValue(JSON.stringify(data, null, 4), 1);
       });
-}
+};
 
 const basic = {
       refresh, save
+};
+
+//
+//    Advanced
+//
+
+let update = () => {
+      let doc = renderer.getDoc(), endpoint = renderer.getEndpoint();
+      clientRole.post(`http://localhost:8082/update/${doc}/${endpoint}`, editor.getValue()).then((data) => {
+            editor.setValue(JSON.stringify(data, null, 4), 1);
+      });
+};
+
+let del = () => {
+      let doc = renderer.getDoc(), endpoint = renderer.getEndpoint();
+      clientRole.get(`http://localhost:8082/delete/${doc}/${endpoint}`).then((data) => {
+            editor.setValue("");
+            setTimeout(() => renderer.readDir(), 1);
+      }).catch(() => {
+            editor.setValue("", -1);
+      });
+};
+
+const advanced = {
+      create: basic.save,
+      read: basic.refresh,
+      update,
+      del
 };
 
 //
@@ -115,21 +149,21 @@ let get = (url) => {
             xhttp.open("GET", url, true);
             xhttp.send();
       });
-}
+};
 
 let post = (url, data) => {
       return new Promise((resolve, reject) => {
             var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("readystatechange", function () {
                   if (this.readyState == 4 && this.status == 200) {
-                        alert(data + "\n" + this.responseText);
                         resolve(JSON.parse(data), this.status);
                   } else if (this.status == 500) reject();
             });
             xhttp.open("POST", url, true);
+            xhttp.setRequestHeader('Content-Type', 'application/json');
             xhttp.send(data);
       });
-}
+};
 
 const clientRole = {
       get, post

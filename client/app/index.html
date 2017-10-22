@@ -27,7 +27,7 @@
                                     <a onclick="renderer.toggle('advanced')" class="nav-link" href="#">Advanced</a>
                               </li>
                               <li class="nav-item">
-                                    <a onclick="renderer.toggle('tools')" class="nav-link" href="#">Tools</a>
+                                    <a onclick="renderer.toggle('query')" class="nav-link" href="#">Query</a>
                               </li>
                               <li class="nav-item">
                                     <a class="nav-link" href="#">Logout</a>
@@ -37,9 +37,9 @@
             </nav>
             <div class="card">
                   <div class="card-header">
-                        <label for="basic-url">Database URL</label>
-                        <div class="input-group no-padding">
-                              <span class="input-group-addon" id="basic-addon3">
+                        <label for="url">Database URL</label>
+                        <div id="url" class="input-group no-padding">
+                              <span class="input-group-addon">
                                     <span id="user">storage</span>/
                                     <span id="doc" class="text-primary">
 
@@ -53,24 +53,85 @@
                               <span onclick="basic.save()" class="input-group-btn basic">
                                     <button class="btn btn-primary" type="button">Save</button>
                               </span>
-                              <span class="input-group-btn advanced">
+                              <span onclick="advanced.create()" class="input-group-btn advanced">
                                     <button class="btn btn-success" type="button">Create</button>
                               </span>
-                              <span class="input-group-btn advanced">
+                              <span onclick="advanced.read()" class="input-group-btn advanced">
                                     <button class="btn btn-info" type="button">Read</button>
                               </span>
-                              <span class="input-group-btn advanced">
+                              <span onclick="advanced.update()" class="input-group-btn advanced">
                                     <button class="btn btn-warning" type="button">Update</button>
                               </span>
-                              <span class="input-group-btn advanced">
+                              <span onclick="advanced.del()" class="input-group-btn advanced">
                                     <button class="btn btn-danger" type="button">Delete</button>
                               </span>
-                              <span class="input-group-btn tools">
-                                    <button class="btn btn-secondary" type="button">Compute</button>
+                              <span class="input-group-btn query">
+                                    <button class="btn btn-info" type="button">Query</button>
                               </span>
-                              <span class="input-group-btn tools">
-                                    <button class="btn btn-warning" type="button">Update</button>
-                              </span>
+                        </div>
+                        <br/>
+                        <div class="alert alert-info query col-12" role="alert">
+                              <h4 class="card-title">Query</h4>
+                              <div class="row">
+                                    <div class="col-sm-12 col-md-5">
+                                          <label for="search">Search</label>
+                                          <div id="search" class="input-group">
+                                                <input type="text" class="form-control" aria-label="limit" placeholder="String, Boolean, or Number">
+                                          </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3">
+                                          <label for="limit">Limit to</label>
+                                          <div id="limit" class="input-group">
+                                                <span class="input-group-addon">
+                                                      <label class="control-label" style="vertical-align: middle; margin: 0px;">
+                                                            First
+                                                            <input id="first" type="radio" name="limit" aria-label="first" class="radio-inline" checked>
+                                                      </label>
+                                                </span>
+                                                <span class="input-group-addon">
+                                                      <label class="radio-inline control-label" style="vertical-align: middle; margin: 0px;">
+                                                            Last
+                                                            <input id="last" type="radio" name="limit" aria-label="last" class="radio-inline">
+                                                      </label>
+                                                </span>
+                                                <input type="text" class="form-control" aria-label="limit" placeholder="0">
+                                          </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2">
+                                          <label for="order">Order By</label>
+                                          <div id="order" class="input-group">
+                                                <span class="input-group-addon">
+                                                      <label class="control-label" style="vertical-align: middle; margin: 0px;">
+                                                            Key
+                                                            <input id="key" type="radio" name="order" aria-label="key" class="radio-inline" checked>
+                                                      </label>
+                                                </span>
+                                                <span class="input-group-addon">
+                                                      <label class="radio-inline control-label" style="vertical-align: middle; margin: 0px;">
+                                                            Value
+                                                            <input id="value" type="radio" name="order" aria-label="value" class="radio-inline">
+                                                      </label>
+                                                </span>
+                                          </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2">
+                                          <label for="order">Save</label>
+                                          <div id="order" class="input-group">
+                                                <span class="input-group-addon">
+                                                      <label class="control-label" style="vertical-align: middle; margin: 0px;">
+                                                            No
+                                                            <input id="no-save" type="radio" name="save" aria-label="no-save" class="radio-inline" checked>
+                                                      </label>
+                                                </span>
+                                                <span class="input-group-addon">
+                                                      <label class="radio-inline control-label" style="vertical-align: middle; margin: 0px;">
+                                                            New
+                                                            <input id="new" type="radio" name="save" aria-label="new" class="radio-inline">
+                                                      </label>
+                                                </span>
+                                          </div>
+                                    </div>
+                              </div>
                         </div>
                   </div>
                   <div class="card-body row no-space">
@@ -80,10 +141,7 @@
                         </div>
                         <div class="col col-md-8 card no-space" style="width: 20rem;">
                               <div class="col card card-code no-space">
-                                    <div id="editor">{
-
-}</div>
-                              </div>
+                                    <div id="editor"></div>
                         </div>
                   </div>
             </div>
