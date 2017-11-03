@@ -16,8 +16,12 @@ const file = require('./file.js');
 // Local Variables
 let port = process.env.PORT || environment.database.port || '8082';
 
+// App Serve
+
 app.use(cors());
 app.use(bodyParser.json());
+
+// Create Function
 
 app.post('/create/:file/', function (req, res) {
       let params = req.params, body = req.body;
@@ -100,26 +104,26 @@ app.get('/delete/:file*', function (req, res) {
 });
 
 // Query Function
-app.get('/query/:file/', function (req, res) {
+app.post('/query/:file/', function (req, res) {
       let params = req.params, body = req.body;
       if (params.file == null)
             return res.status(500).send('Invalid URI for QUERY operation.');
       else if (body == null)
             return res.status(500).send('Invalid body for QUERY operation.');
       file.query(params.file, null, body).then((r) => {
-            res.status(200).json(r)
+            res.status(200).json(r);
       }).catch(() => {
             res.status(500).send('Error executing QUERY operation.');
       });
 });
-app.get('/query/:file*', function (req, res) {
+app.post('/query/:file*', function (req, res) {
       let params = req.params, address = (req.params["0"] || "").substring(1), body = req.body;
       if (params.file == null || address == null)
             return res.status(500).send('Invalid URI for QUERY operation.');
       else if (body == null)
             return res.status(500).send('Invalid body for QUERY operation.');
       file.query(params.file, address, body).then((r) => {
-            res.status(200).json(r)
+            res.status(200).json(r);
       }).catch(() => {
             res.status(500).send('Error executing QUERY operation.');
       });

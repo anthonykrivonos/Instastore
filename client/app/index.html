@@ -30,7 +30,11 @@
                                     <a onclick="renderer.toggle('query')" class="nav-link" href="#">Query</a>
                               </li>
                               <li class="nav-item">
-                                    <a class="nav-link" href="#">Logout</a>
+                                    <a class="nav-link" href="#">
+                                          <form action="/logout" method="post">
+                                                <input type="submit" value="Logout"/>
+                                          </form>
+                                    </a>
                               </li>
                         </ul>
                   </div>
@@ -65,7 +69,7 @@
                               <span onclick="advanced.del()" class="input-group-btn advanced">
                                     <button class="btn btn-danger" type="button">Delete</button>
                               </span>
-                              <span class="input-group-btn query">
+                              <span onclick="query.query()" class="input-group-btn query">
                                     <button class="btn btn-info" type="button">Query</button>
                               </span>
                         </div>
@@ -94,22 +98,22 @@
                                                             <input id="last" type="radio" name="limit" aria-label="last" class="radio-inline">
                                                       </label>
                                                 </span>
-                                                <input type="text" class="form-control" aria-label="limit" placeholder="0">
+                                                <input id="count" type="text" class="form-control" aria-label="limit" placeholder="0">
                                           </div>
                                     </div>
                                     <div class="col-sm-12 col-md-2">
-                                          <label for="order">Order By</label>
+                                          <label for="order">Order By Key</label>
                                           <div id="order" class="input-group">
                                                 <span class="input-group-addon">
                                                       <label class="control-label" style="vertical-align: middle; margin: 0px;">
-                                                            Key
-                                                            <input id="key" type="radio" name="order" aria-label="key" class="radio-inline" checked>
+                                                            No
+                                                            <input type="radio" name="order" aria-label="key" class="radio-inline" checked>
                                                       </label>
                                                 </span>
                                                 <span class="input-group-addon">
                                                       <label class="radio-inline control-label" style="vertical-align: middle; margin: 0px;">
-                                                            Value
-                                                            <input id="value" type="radio" name="order" aria-label="value" class="radio-inline">
+                                                            Yes
+                                                            <input id="order" type="radio" name="order" aria-label="value" class="radio-inline">
                                                       </label>
                                                 </span>
                                           </div>
@@ -135,8 +139,18 @@
                         </div>
                   </div>
                   <div class="card-body row no-space">
-                        <div class="col col-md-4 card no-padding" style="width: 20rem;">
+                        <div class="col col-md-4 card no-padding doclist" style="width: 20rem;">
                               <ul id="doclist" class="list-group list-group-flush">
+                              </ul>
+                              <ul id="docAdd" class="list-group list-group-flush">
+                                    <li class="doc-item list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                          <div class="input-group">
+                                                <input id="newdoc" type="text" class="form-control" aria-label="newcod" placeholder="Create a New Document">
+                                                <span class="input-group-btn">
+                                                      <button onclick="basic.newDoc()" class="btn btn-secondary" type="button">+</button>
+                                                </span>
+                                          </div>
+                                    </li>
                               </ul>
                         </div>
                         <div class="col col-md-8 card no-space" style="width: 20rem;">

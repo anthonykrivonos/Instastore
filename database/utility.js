@@ -5,6 +5,8 @@
 
 // Global Imports
 const fs = require('fs');
+const objectSearch = require('object-search');
+const sortObj = require('sort-object');
 
 // Local Variables
 const BEAUTIFY_INDENTATION = 2;
@@ -73,34 +75,36 @@ let remove = (object, property) => {
 
 let query = (object, query) => {
       if (!query) return object;
-      if (query.search) object = search(object, query.search);
-      if (query.limit) object = limit(object, query.limit);
+      if (query.search && query.search != "") object = search(object, query.search);
+      if (query.limit && query.limit.count > 0) object = limit(object, query.limit.direction, query.limit.count);
+      if (query.order) object = order(object);
+      return verify(object);
 };
 
 let search = (object, value) => {
-      var result = null;
-      if (object instanceof Array) {
-            for (var i = 0; i < object.length; i++) {
-                  result = search(object[i]);
-                  if (result) break;
-            }
-      } else {
-            for (var prop in object) {
-                  if (prop == value && object[prop] == 1) return object;
-                  if (object[prop] instanceof Object || object[prop] instanceof Array) {
-                        result = search(object[prop]);
-                        if (result) break;
-                  }
-            }
-      }
-      return result;
+      return objectSearch.find(object, value);
 }
 
-let limit = (object, value) => {
-      var result = null, newObject = [];
-      if (object instanceof Array) for (var i = 0; i < value; i++) newObject.push(object[i]);
+let limit = (object, direction, count) => {
+      var newObject = [];
+      if (direction == "first" && object instanceof Array) {
+            for (var i = 0; i < count; i++) {
+                  if (object[i]) newObject.push(object[i]);
+                  else break;
+            };
+      }
+      else if (object instanceof Array) {
+            for (var i = count - 1; i >= 0; i--) {
+                  if (object[i]) newObject.push(object[i]);
+                  else break;;
+            }
+      }
       else newObject = object;
       return newObject;
+}
+
+let order = (object) => {
+      return sortObj(object);
 }
 
 // Exported Methods

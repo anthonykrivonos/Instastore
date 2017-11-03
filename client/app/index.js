@@ -33,7 +33,8 @@ let toggle = (action) => {
       renderer.readDir();
 };
 
-let readDir = () => {
+let readDir = (callback) => {
+      let dir = [];
       renderer.setEndpoint("");
       clientRole.get('http://localhost:8082/read/').then((data) => {
             let doclist = document.getElementById("doclist");
@@ -48,14 +49,16 @@ let readDir = () => {
                               ${doc}
                         </li>
                   `;
+                  dir.push(doc.toLowerCase());
             });
             doclist.innerHTML = htmlList;
+            if (callback) callback(dir);
       });
-}
+};
 
 let parseDocName = (name) => {
       return name.substring(0, name.indexOf('.json'));
-}
+};
 
 let setCurrentDoc = (doc) => {
       clientRole.get(`http://localhost:8082/read/${doc}/${renderer.getEndpoint()}`).then((data) => {
@@ -64,22 +67,42 @@ let setCurrentDoc = (doc) => {
       }).catch(() => {
             editor.setValue("", -1);
       });;
-}
+};
 
 let getDoc = () => {
       return document.getElementById('doc').innerHTML;
-}
+};
 
 let getEndpoint = () => {
       return document.getElementById('endpoint').value;
-}
+};
+
+let getNewDoc = () => {
+      return document.getElementById('newdoc').value;
+};
 
 let setEndpoint = (endpoint) => {
       document.getElementById('endpoint').value = endpoint;
-}
+};
+
+let setNewDoc = (newDoc) => {
+      document.getElementById('newdoc').value = newDoc;
+};
+
+let getQuery = () => {
+      return {
+            search: document.getElementById('search').value,
+            limit: {
+                  direction: document.getElementById('first').checked ? "first" : "last",
+                  count: document.getElementById('count').value
+            },
+            order: document.getElementById('order').checked == true,
+            save: document.getElementById('new').checked == true
+      }
+};
 
 const renderer = {
-      viewDidLoad, toggle, readDir, parseDocName, setCurrentDoc, getDoc, getEndpoint, setEndpoint
+      viewDidLoad, toggle, readDir, parseDocName, setCurrentDoc, getDoc, getEndpoint, getNewDoc, setEndpoint, setNewDoc, getQuery
 };
 
 //
@@ -95,15 +118,34 @@ let refresh = () => {
       });
 };
 
-let save = () => {
+let save = (url = null) => {
       let doc = renderer.getDoc(), endpoint = renderer.getEndpoint();
-      clientRole.post(`http://localhost:8082/create/${doc}/${endpoint}`, editor.getValue()).then((data) => {
+      clientRole.post(url == null ? `http://localhost:8082/create/${doc}/${endpoint}` : `http://localhost:8082/create/${url}`, editor.getValue()).then((data) => {
             editor.setValue(JSON.stringify(data, null, 4), 1);
       });
 };
 
+let newDoc = () => {
+      renderer.readDir((dir) => {
+            let doc = renderer.getNewDoc();
+            if (!doc || doc.length <= 0 || dir.includes(doc.toLowerCase())) return;
+            clientRole.post(`http://localhost:8082/create/${doc}`, basic.getEmpty()).then((data) => {
+                  editor.setValue(JSON.stringify(data, null, 4), 1);
+                  renderer.setNewDoc("");
+                  setTimeout(() => renderer.readDir(), 1);
+            });
+      });
+};
+
+let getEmpty = () => {
+      return JSON.stringify({
+
+
+      });
+};
+
 const basic = {
-      refresh, save
+      refresh, save, newDoc, getEmpty
 };
 
 //
@@ -135,6 +177,28 @@ const advanced = {
 };
 
 //
+//    Query
+//
+
+let que = () => {
+      let doc = renderer.getDoc(), endpoint = renderer.getEndpoint();
+      clientRole.post(`http://localhost:8082/query/${doc}/${endpoint}`, JSON.stringify(renderer.getQuery())).then((data) => {
+            editor.setValue(JSON.stringify(data, null, 4));
+            if (renderer.getQuery().save) {
+                  var d = new Date();
+                  basic.save(renderer.getDoc() + `${d.now()}/` + renderer.getEndpoint());
+                  setTimeout(() => renderer.readDir(), 1);
+            }
+      }).catch(() => {
+            editor.setValue("", -1);
+      });
+};
+
+const query = {
+      query: que
+};
+
+//
 //    Client Role
 //
 
@@ -156,7 +220,7 @@ let post = (url, data) => {
             var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("readystatechange", function () {
                   if (this.readyState == 4 && this.status == 200) {
-                        resolve(JSON.parse(data), this.status);
+                        resolve(JSON.parse(this.responseText), this.status);
                   } else if (this.status == 500) reject();
             });
             xhttp.open("POST", url, true);
